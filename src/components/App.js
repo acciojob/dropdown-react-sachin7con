@@ -139,55 +139,46 @@ const states = [{
 
 
 function App() {
-	const defaultState = states[0]; // Madhya Pradesh
-	const defaultCity = defaultState.city[0]; // Indore
-	const defaultLandmark = defaultCity.landmarks[0]; // Mhow
+	const defaultStateIndex = 0;
+	const defaultCityIndex = 0;
+	const defaultLandmarkIndex = 0;
   
-	const [selectedState, setSelectedState] = useState(defaultState.name);
-	const [selectedCity, setSelectedCity] = useState(defaultCity.name);
-	const [selectedLandmark, setSelectedLandmark] = useState(defaultLandmark.name);
+	const [selectedStateIndex, setSelectedStateIndex] = useState(defaultStateIndex);
+	const [selectedCityIndex, setSelectedCityIndex] = useState(defaultCityIndex);
+	const [selectedLandmarkIndex, setSelectedLandmarkIndex] = useState(defaultLandmarkIndex);
+  
+	const selectedState = states[selectedStateIndex];
+	const cities = selectedState.city;
+	const selectedCity = cities[selectedCityIndex];
+	const landmarks = selectedCity.landmarks;
+	const selectedLandmark = landmarks[selectedLandmarkIndex];
   
 	const handleStateChange = (e) => {
-	  const newStateName = e.target.value;
-	  const newState = states.find((state) => state.name === newStateName);
-	  const newCity = newState.city[0];
-	  const newLandmark = newCity.landmarks[0];
-  
-	  setSelectedState(newState.name);
-	  setSelectedCity(newCity.name);
-	  setSelectedLandmark(newLandmark.name);
+	  const newStateIndex = parseInt(e.target.value, 10);
+	  setSelectedStateIndex(newStateIndex);
+	  setSelectedCityIndex(0); // Reset city index to the first city
+	  setSelectedLandmarkIndex(0); // Reset landmark index to the first landmark
 	};
   
 	const handleCityChange = (e) => {
-	  const newCityName = e.target.value;
-	  const newCity = states
-		.find((state) => state.name === selectedState)
-		.city.find((city) => city.name === newCityName);
-	  const newLandmark = newCity.landmarks[0];
-  
-	  setSelectedCity(newCity.name);
-	  setSelectedLandmark(newLandmark.name);
+	  const newCityIndex = parseInt(e.target.value, 10);
+	  setSelectedCityIndex(newCityIndex);
+	  setSelectedLandmarkIndex(0); // Reset landmark index to the first landmark
 	};
   
 	const handleLandmarkChange = (e) => {
-	  setSelectedLandmark(e.target.value);
+	  const newLandmarkIndex = parseInt(e.target.value, 10);
+	  setSelectedLandmarkIndex(newLandmarkIndex);
 	};
-  
-	const cities = states.find((state) => state.name === selectedState)?.city || [];
-	const landmarks = cities.find((city) => city.name === selectedCity)?.landmarks || [];
-  
-	const stateInfo = states.find((state) => state.name === selectedState) || {};
-	const cityInfo = cities.find((city) => city.name === selectedCity) || {};
-	const landmarkInfo = landmarks.find((landmark) => landmark.name === selectedLandmark) || {};
   
 	return (
 	  <div id="main">
 		<div id="left-panel">
 		  <div className="select-group">
 			<label htmlFor="state">State</label>
-			<select id="state" value={selectedState} onChange={handleStateChange}>
+			<select id="state" value={selectedStateIndex} onChange={handleStateChange}>
 			  {states.map((state, index) => (
-				<option key={index} value={state.name}>
+				<option key={index} value={index}>
 				  {state.name}
 				</option>
 			  ))}
@@ -196,9 +187,9 @@ function App() {
   
 		  <div className="select-group">
 			<label htmlFor="city">City</label>
-			<select id="city" value={selectedCity} onChange={handleCityChange}>
+			<select id="city" value={selectedCityIndex} onChange={handleCityChange}>
 			  {cities.map((city, index) => (
-				<option key={index} value={city.name}>
+				<option key={index} value={index}>
 				  {city.name}
 				</option>
 			  ))}
@@ -207,9 +198,9 @@ function App() {
   
 		  <div className="select-group">
 			<label htmlFor="landmark">Landmark</label>
-			<select id="landmark" value={selectedLandmark} onChange={handleLandmarkChange}>
+			<select id="landmark" value={selectedLandmarkIndex} onChange={handleLandmarkChange}>
 			  {landmarks.map((landmark, index) => (
-				<option key={index} value={landmark.name}>
+				<option key={index} value={index}>
 				  {landmark.name}
 				</option>
 			  ))}
@@ -219,18 +210,18 @@ function App() {
   
 		<div id="right-panel">
 		  <div>
-			<div id="state-name">{stateInfo.name}</div>
-			<div id="state-description">{stateInfo.description}</div>
+			<div id="state-name">{selectedState.name}</div>
+			<div id="state-description">{selectedState.description}</div>
 		  </div>
   
 		  <div>
-			<div id="city-name">{cityInfo.name}</div>
-			<div id="city-description">{cityInfo.description}</div>
+			<div id="city-name">{selectedCity.name}</div>
+			<div id="city-description">{selectedCity.description}</div>
 		  </div>
   
 		  <div>
-			<div id="landmark-name">{landmarkInfo.name}</div>
-			<div id="landmark-description">{landmarkInfo.description}</div>
+			<div id="landmark-name">{selectedLandmark.name}</div>
+			<div id="landmark-description">{selectedLandmark.description}</div>
 		  </div>
 		</div>
 	  </div>
@@ -238,4 +229,3 @@ function App() {
   }
   
   export default App;
- 
