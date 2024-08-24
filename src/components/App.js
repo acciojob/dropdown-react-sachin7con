@@ -1,4 +1,4 @@
-import React, { useState,useReducer } from "react";
+import React, { useState, useReducer } from "react";
 import "./../styles/App.css";
 
 
@@ -138,15 +138,99 @@ const states = [{
 }];
 
 
-function App() 
-{
-	// Do not alter/remove main div
+function App() {
+	const defaultState = states[0]; // Madhya Pradesh
+	const defaultCity = defaultState.city[0]; // Indore
+	const defaultLandmark = defaultCity.landmarks[0]; // Mhow
+  
+	const [selectedState, setSelectedState] = useState(defaultState.name);
+	const [selectedCity, setSelectedCity] = useState(defaultCity.name);
+	const [selectedLandmark, setSelectedLandmark] = useState(defaultLandmark.name);
+  
+	const cities = states.find((state) => state.name === selectedState)?.city || [];
+	const cityOptions = cities.map((city, index) => (
+	  <option key={index} value={city.name}>
+		{city.name}
+	  </option>
+	));
+  
+	const landmarks = cities.find((city) => city.name === selectedCity)?.landmarks || [];
+	const landmarkOptions = landmarks.map((landmark, index) => (
+	  <option key={index} value={landmark.name}>
+		{landmark.name}
+	  </option>
+	));
+  
+	const handleStateChange = (e) => {
+	  const newState = states.find((state) => state.name === e.target.value);
+	  setSelectedState(newState.name);
+	  setSelectedCity(newState.city[0].name);
+	  setSelectedLandmark(newState.city[0].landmarks[0].name);
+	};
+  
+	const handleCityChange = (e) => {
+	  const newCity = cities.find((city) => city.name === e.target.value);
+	  setSelectedCity(newCity.name);
+	  setSelectedLandmark(newCity.landmarks[0]?.name || "");
+	};
+  
+	const handleLandmarkChange = (e) => {
+	  setSelectedLandmark(e.target.value);
+	};
+  
+	const stateInfo = states.find((state) => state.name === selectedState) || {};
+	const cityInfo = cities.find((city) => city.name === selectedCity) || {};
+	const landmarkInfo = landmarks.find((landmark) => landmark.name === selectedLandmark) || {};
+  
 	return (
-	<div id="main">
-		
-	</div>
-	);
-}
-
-
-export default App;
+		<div id="main">
+		  <div id="left-panel">
+			<div className="select-group">
+			  <label htmlFor="state">State</label>
+			  <select id="state" value={selectedState} onChange={handleStateChange}>
+				{states.map((state, index) => (
+				  <option key={index} value={state.name}>
+					{state.name}
+				  </option>
+				))}
+			  </select>
+			</div>
+	  
+			<div className="select-group">
+			  <label htmlFor="city">City</label>
+			  <select id="city" value={selectedCity} onChange={handleCityChange}>
+				
+				{cityOptions}
+			  </select>
+			</div>
+	  
+			<div className="select-group">
+			  <label htmlFor="landmark">Landmark</label>
+			  <select id="landmark" value={selectedLandmark} onChange={handleLandmarkChange}>
+				
+				{landmarkOptions}
+			  </select>
+			</div>
+		  </div>
+	  
+		  <div id="right-panel">
+			<div>
+			  <div id="state-name">{stateInfo.name}</div>
+			  <div id="state-description">{stateInfo.description}</div>
+			</div>
+	  
+			<div>
+			  <div id="city-name">{cityInfo.name}</div>
+			  <div id="city-description">{cityInfo.description}</div>
+			</div>
+	  
+			<div>
+			  <div id="landmark-name">{landmarkInfo.name}</div>
+			  <div id="landmark-description">{landmarkInfo.description}</div>
+			</div>
+		  </div>
+		</div>
+	  );
+  }
+  
+  export default App;
